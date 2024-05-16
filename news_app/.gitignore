@@ -42,3 +42,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 news_app/lib/src/services/
+/lib/src/services/api_constants.dart
+/lib/src/services/api_service.dart
