@@ -3,8 +3,6 @@ import 'package:news_app/src/common/text_widgets/heading_text.dart';
 import 'package:news_app/src/models/news_model.dart';
 import 'package:news_app/src/screens/blog/widgets/show_blog_data.dart';
 
-import '../../common/appbar/custom_appbar.dart';
-
 class BlogScreen extends StatefulWidget {
   const BlogScreen({super.key, required this.blogNews});
 
@@ -18,14 +16,9 @@ class _BlogScreenState extends State<BlogScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: "Blogs",
-        actionIcon: Icons.search,
-        leadingIcon: Icons.arrow_back,
-        showLeadingIcon: true,
-      ),
+
       body: widget.blogNews.isEmpty || widget.blogNews == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: SizedBox(
                 height: MediaQuery.of(context).size.height - 150,
@@ -59,10 +52,10 @@ class _BlogScreenState extends State<BlogScreen> {
                                                 ? widget
                                                     .blogNews[index].coverPhoto
                                                     .toString()
-                                                : "assets/image/img.png",
+                                                : "assets/image/img.png", title: widget.blogNews[index].title,
                                           )))
                               : ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                                  const SnackBar(
                                       content: Text("No News Video"),
                                       duration: Duration(milliseconds: 500)));
                         },
@@ -89,10 +82,12 @@ class _BlogScreenState extends State<BlogScreen> {
                       _space,
                       Text(
                         widget.blogNews[index].title.toString(),
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
+                      ),
+                      HeadingText(title: "Views", value: widget.blogNews[index].views.toString(),
                       ),
                       _space,
                       HeadingText(
@@ -100,8 +95,7 @@ class _BlogScreenState extends State<BlogScreen> {
                           value: widget.blogNews[index].createdAt
                               .toLocal()
                               .toString()),
-                      _space,
-                      _space,
+                     const SizedBox(height: 25,)
                     ],
                   ),
                 ),
@@ -110,5 +104,5 @@ class _BlogScreenState extends State<BlogScreen> {
     );
   }
 
-  Widget get _space => const SizedBox(height: 10);
+  Widget get _space => const SizedBox(height: 5);
 }

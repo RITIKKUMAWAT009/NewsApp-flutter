@@ -24,15 +24,12 @@ class _PlayVideoScreenState extends State<PlayVideoScreen> {
   late PlayerState _playerState;
   late YoutubeMetaData _videoMetaData;
   double _volume = 100;
-  bool _muted = false;
   bool _isPlayerReady = false;
-  final String _ids = 'M-VWY9dCNM0';
   String? videoIdd;
 
   void getYouId() {
     try {
       videoIdd = YoutubePlayer.convertUrlToId(widget.videoUrl);
-      log('this is ${videoIdd!}');
     } catch (error) {
       log('error$error');
     }
@@ -69,12 +66,11 @@ class _PlayVideoScreenState extends State<PlayVideoScreen> {
     }
   }
 
-  // @override
-  // void deactivate() {
-  //   // Pauses video while navigating to next page.
-  //   _controller.pause();
-  //   super.deactivate();
-  // }
+  @override
+  void deactivate() {
+   _controller.pause();
+    super.deactivate();
+  }
 
   @override
   void dispose() {
@@ -137,17 +133,6 @@ class _PlayVideoScreenState extends State<PlayVideoScreen> {
             'Video',
             style: TextStyle(color: Colors.black),
           ),
-          actions: [
-            // IconButton(
-            //   icon: const Icon(Icons.video_library),
-            //   onPressed: () => Navigator.push(
-            //     context,
-            //     CupertinoPageRoute(
-            //       builder: (context) => Text("data"),
-            //     ),
-            //   ),
-            // ),
-          ],
         ),
         body: ListView(
           children: [
@@ -215,7 +200,7 @@ class _PlayVideoScreenState extends State<PlayVideoScreen> {
                     ),
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Video is : ' + _playerState.name.toString(),
+                      'Video is : ${_playerState.name}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,

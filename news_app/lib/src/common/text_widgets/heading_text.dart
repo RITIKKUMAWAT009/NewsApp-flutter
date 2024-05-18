@@ -12,7 +12,7 @@ final String value;
         style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 17
+            fontSize: 15
         ),
         children: [
           TextSpan(
