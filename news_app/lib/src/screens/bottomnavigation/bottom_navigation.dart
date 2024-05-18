@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/src/common/search_screen.dart';
 
 import '../../models/news_model.dart';
 import '../../services/api_service.dart';
@@ -10,7 +11,7 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  State<StatefulWidget> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
@@ -20,6 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   List<NewsElement> videos = [];
   bool isCacheLoading = true;
   bool isLoading = true;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -31,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
   void _loadCachedData() async {
     allNews = (await ApiService().getCachedNewsData()) ?? [];
     setState(() {
-      blogs = allNews.where((news) => news.newsType == NewsType.BLOG).toList();
+      blogs = allNews.where((news) => news.newsType == NewsType.BLOG)  .toList();
       videos = allNews
           .where((news) => news.newsType == NewsType.VIDEO_NEWS)
           .toList();
@@ -43,28 +45,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       isLoading = true;
     });
-    allNews = (await ApiService().getNewsData())!;
-    // allNews.add(NewsElement(
-    //     id: 1,
-    //     title: "Ritik",
-    //     slug: "slug",
-    //     category: "category",
-    //     city: "city",
-    //     state: "state",
-    //     description: "description",
-    //     videoUrl: "https://www.youtube.com/watch?v=Dc5fzzVpNHM",
-    //     embedCode: "embedCode",
-    //     newsType: NewsType.BLOG,
-    //     file: "file",
-    //     coverPhoto: "coverPhoto",
-    //     metaDescription: "metaDescription",
-    //     metaKeywords: "metaKeywords",
-    //     userId: "userId",
-    //     uniqueKey: "uniqueKey",
-    //     status: Status.UNDER_REVIEW,
-    //     views: 10,
-    //     createdAt: DateTime(DateTime.april),
-    //     updatedAt: DateTime(DateTime.april)));
+    // allNews = (await ApiService().getNewsData())!;
 
     setState(() {
       blogs = allNews.where((news) => news.newsType == NewsType.BLOG).toList();
@@ -84,40 +65,64 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        backgroundColor: Colors.blueAccent.shade100,
+        title: const Text(
+          "Daily News",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: IconButton(
+                onPressed: () {
+                  _scaffoldKey.currentState!.openEndDrawer();
+                },
+                icon: const Icon(
+                  Icons.search,
+                  color: Colors.black,
+                  size: 35,
+                )),
+          )
+        ],
+      ),
       body: isCacheLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Stack(children: [
-              _getBody(),
-              if (isLoading)
-                Positioned(
-                  left: 0,
-                  bottom: MediaQuery.of(context).size.height / 1.38,
-                  right: 0,
-                  child: Center(
+          : Stack(
+              children: [
+                _getBody(),
+                if (isLoading)
+                  Positioned(
+                    left: 0,
+                    bottom: MediaQuery.of(context).size.height / 1.38,
+                    right: 0,
+                    child: Center(
                       child: CircularProgressIndicator(
-                    color: Colors.red.shade700,
-                    backgroundColor: Colors.white,
-                    strokeAlign: 3,
-                    strokeWidth: 5,
-                  )),
-                ),
-            ]),
+                        color: Colors.red.shade700,
+                        backgroundColor: Colors.white,
+                        strokeAlign: 3,
+                        strokeWidth: 5,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
       bottomNavigationBar: BottomNavigationBar(
         unselectedLabelStyle:
-            TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        selectedLabelStyle: TextStyle(shadows: const [
-          // BoxShadow(
-          //     color: Colors.blue.shade700, blurRadius: 20, spreadRadius: 20)
-        ], color: Colors.blueAccent.shade700, fontWeight: FontWeight.bold),
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        selectedLabelStyle: TextStyle(
+            color: Colors.blueAccent.shade700, fontWeight: FontWeight.bold),
         backgroundColor: Colors.blue.shade100,
         selectedItemColor: Colors.blueAccent.shade700,
         elevation: 5,
         iconSize: 28,
         selectedFontSize: 17,
         unselectedItemColor: Colors.black,
-
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
         items: const [
@@ -129,6 +134,9 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
               icon: Icon(Icons.video_library), label: 'Videos'),
         ],
+      ),
+      endDrawer: SearchScreen(
+        list: allNews,
       ),
     );
   }
@@ -144,5 +152,32 @@ class _MainScreenState extends State<MainScreen> {
       default:
         return HomeScreen(list: allNews);
     }
+  }
+}
+
+class CustomSliverPersistentHeaderDelegate
+    extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  CustomSliverPersistentHeaderDelegate({required this.child});
+
+  @override
+  double get minExtent => kToolbarHeight;
+
+  @override
+  double get maxExtent => kToolbarHeight;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Colors.white,
+      child: child,
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
   }
 }

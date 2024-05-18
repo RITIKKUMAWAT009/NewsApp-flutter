@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/src/videoplayer_screen/video_player.dart';
 
-import '../../common/appbar/custom_appbar.dart';
+import '../../common/text_widgets/heading_text.dart';
 import '../../models/news_model.dart';
 
 class VideoScreen extends StatefulWidget {
@@ -14,52 +14,21 @@ class VideoScreen extends StatefulWidget {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
-  // List<NewsElement> list = [];
-  // List<NewsElement> blogs = [];
-  // List<NewsElement> videos = [];
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _getNews();
-  // }
-  //
-  // _getNews() async {
-  //   list = (await ApiService().getNewsData())!;
-  //   print('list count: ${list.length}');
-  //
-  //   Future.delayed(
-  //     const Duration(seconds: 2),
-  //     () => setState(() {
-  //       videos = list.where((news) => news.newsType== NewsType.VIDEO_NEWS).toList();
-  //       blogs = list.where((news) => news.newsType == NewsType.BLOG).toList();
-  //       print('Blogs count: ${blogs.length}'); // Debugging line
-  //       print('Videos count: ${videos.length}'); // D
-  //     }),
-  //   );
-  //   // print(list[8].title);
-  //   // print(list[4].description);
-  //   for(int i=0;i<list.length;i++){
-  //     print(list[i].userId);
-  //   }
-  //   // print('Blogs count: ${blogs.length}'); // Debugging line
-  //   // print('Videos count: ${videos.length}');
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Videos",actionIcon: Icons.search,leadingIcon: Icons.arrow_back,showLeadingIcon: true,),
-
       body: widget.list.isEmpty || widget.list == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2.0,vertical: 2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height - 170,
                   child: ListView.builder(
                     itemCount: widget.list.isNotEmpty ? widget.list.length : 1,
                     itemBuilder: (context, index) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         InkWell(
@@ -75,7 +44,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                               .toString()),
                                     ))
                                 : ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
+                                    .showSnackBar(const SnackBar(
                                     content: Text("No News Video"),
                                     duration: Duration(milliseconds: 500),
                                   ));
@@ -87,7 +56,8 @@ class _VideoScreenState extends State<VideoScreen> {
                                 child: widget.list[index].coverPhoto != null
                                     ? Image.network(
                                         fit: BoxFit.cover,
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                         widget.list[index].coverPhoto!,
                                         errorBuilder:
                                             (context, error, stackTrace) {
@@ -118,11 +88,23 @@ class _VideoScreenState extends State<VideoScreen> {
                         ),
                         Text(
                           widget.list[index].title.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 20),
                         ),
+                        HeadingText(
+                          title: "Views",
+                          value: widget.list[index].views.toString(),
+                        ),
+                        HeadingText(
+                            title: "Blog Created at",
+                            value: widget.list[index].createdAt
+                                .toLocal()
+                                .toString()),
+                        const SizedBox(
+                          height: 20,
+                        )
                       ],
                     ),
                   ),

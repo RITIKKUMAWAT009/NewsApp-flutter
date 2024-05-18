@@ -22,9 +22,7 @@ class _VideoPlayWidgetState extends State<VideoPlayWidget> {
   late PlayerState _playerState;
   late YoutubeMetaData _videoMetaData;
   double _volume = 100;
-  bool _muted = false;
   bool _isPlayerReady = false;
-  final String _ids='M-VWY9dCNM0';
   String? videoIdd;
   void getYouId(){
     try {
@@ -140,7 +138,7 @@ class _VideoPlayWidgetState extends State<VideoPlayWidget> {
               onPressed: () => Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => Text("data"),
+                  builder: (context) => const Text("data"),
                 ),
               ),
             ),
@@ -213,7 +211,7 @@ class _VideoPlayWidgetState extends State<VideoPlayWidget> {
                     ),
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Video is : '+_playerState.name.toString(),
+                      'Video is : ${_playerState.name}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -251,7 +249,6 @@ class _VideoPlayWidgetState extends State<VideoPlayWidget> {
       ),
     );
   }
-
   Color _getStateColor(PlayerState state) {
     switch (state) {
       case PlayerState.unknown:
@@ -275,61 +272,4 @@ class _VideoPlayWidgetState extends State<VideoPlayWidget> {
 
   Widget get _space => const SizedBox(height: 10);
 
-  // Widget _loadCueButton(String action) {
-  //   return Expanded(
-  //     child: MaterialButton(
-  //       color: Colors.blueAccent,
-  //       onPressed: _isPlayerReady
-  //           ? () {
-  //         if (_idController.text.isNotEmpty) {
-  //           var id = YoutubePlayer.convertUrlToId(
-  //             _idController.text,
-  //           ) ??
-  //               '';
-  //           if (action == 'LOAD') _controller.load(id);
-  //           if (action == 'CUE') _controller.cue(id);
-  //           FocusScope.of(context).requestFocus(FocusNode());
-  //         } else {
-  //           _showSnackBar('Source can\'t be empty!');
-  //         }
-  //       }
-  //           : null,
-  //       disabledColor: Colors.grey,
-  //       disabledTextColor: Colors.black,
-  //       child: Padding(
-  //         padding: const EdgeInsets.symmetric(vertical: 14.0),
-  //         child: Text(
-  //           action,
-  //           style: const TextStyle(
-  //             fontSize: 18.0,
-  //             color: Colors.white,
-  //             fontWeight: FontWeight.w300,
-  //           ),
-  //           textAlign: TextAlign.center,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-  //
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontWeight: FontWeight.w300,
-            fontSize: 16.0,
-          ),
-        ),
-        backgroundColor: Colors.blueAccent,
-        behavior: SnackBarBehavior.floating,
-        elevation: 1.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50.0),
-        ),
-      ),
-    );
-  }
 }
